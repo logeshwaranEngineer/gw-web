@@ -1,38 +1,100 @@
-.App {
+/* General */
+.app {
+  max-width: 800px;
+  margin: auto;
+  padding: 16px;
+  font-family: Arial, sans-serif;
+  color: blue;
+}
+
+/* Header */
+.header {
   text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Inputs */
+input, select, button {
+  padding: 8px;
+  margin: 4px;
+  border: 1px solid #aaa;
+  border-radius: 8px;
+  font-size: 0.9rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+button {
+  background: #007bff;
   color: white;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.App-link {
-  color: #61dafb;
+button:hover {
+  background: #0056b3;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Add row */
+.add-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+/* Location list */
+.loc-list div {
+  background: #f1f8ff;
+  margin: 4px 0;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Employee list */
+.emp-list {
+  margin-top: 12px;
+}
+
+.emp-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9f9f9;
+  margin: 6px 0;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0px 1px 4px rgba(0,0,0,0.1);
+}
+
+.emp-card span {
+  flex: 1;
+  font-weight: 500;
+}
+
+/* Copy button */
+.copy {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 12px;
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+  .add-row {
+    flex-direction: column;
   }
-  to {
-    transform: rotate(360deg);
+  .emp-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .emp-card select, .emp-card button {
+    margin-top: 6px;
+    width: 100%;
   }
 }
