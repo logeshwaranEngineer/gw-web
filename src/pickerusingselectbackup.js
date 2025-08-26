@@ -28,7 +28,6 @@ const initialLocations = [
 // Fixed drivers
 const DRIVER1 = "SHANTHAKUMAR - YR3364P (Driver)";
 const DRIVER2 = "VELLAISAMY PRASANTH -  YQ1179B  (Driver)";
-
 const App = () => {
   const tomorrow = useMemo(() => addDays(new Date(), 1), []);
   const formattedDate = useMemo(() => format(tomorrow, "dd/MM/yyyy EEEE"), [tomorrow]);
@@ -46,11 +45,9 @@ const App = () => {
   const [time1, setTime1] = useState("06:00");
   const [time2, setTime2] = useState("06:30");
 
-  // already used employees
   const usedInDriver1 = Object.values(assignments1).flat();
   const usedInDriver2 = Object.values(assignments2).flat();
 
-  // available employees for each driver
   const unassignedEmployees1 = initialEmployees.filter(
     e => !usedInDriver1.includes(e) && !usedInDriver2.includes(e)
   );
@@ -58,7 +55,6 @@ const App = () => {
     e => !usedInDriver2.includes(e) && !usedInDriver1.includes(e)
   );
 
-  // toggle employee
   const toggleEmployee = (emp, loc, driver) => {
     if (driver === 1) {
       setAssignments1(prev => {
@@ -77,12 +73,6 @@ const App = () => {
     }
   };
 
-  // count employees
-  const count1 = usedInDriver1.length;
-  const count2 = usedInDriver2.length;
-  const totalCount = count1 + count2;
-
-  // summary build
   const buildSummary = (driver, time, assignments) => {
     const header =
       `Date : ${formattedDate}\n` +
@@ -97,7 +87,14 @@ const App = () => {
         return `\n*${loc}* (${list.length})\n${lines}`;
       });
 
-    return [header, ...blocks, `\nTotal : ${Object.values(assignments).flat().length} Employees + 1 Driver`].join("\n");
+    const firstLoc = Object.keys(assignments)[0];
+    let footer = "";
+    if (firstLoc) {
+      const count = assignments[firstLoc]?.length || 0;
+      footer = `\nTotal in first vehicle: ${count} Employees + 1 Driver`;
+    }
+
+    return [header, ...blocks, footer].join("\n");
   };
 
   const renderAssignedList = (assignments) => (
@@ -122,11 +119,10 @@ const App = () => {
     <div className="app">
       <h2 className="header">Transportation Assignment</h2>
       <p><strong>Date:</strong> {formattedDate}</p>
-      <p><strong>Total Employees Assigned:</strong> {totalCount}</p>
 
       {/* DRIVER 1 */}
       <div className="card">
-        <h3>Driver 1 — {DRIVER1} ({count1})</h3>
+        <h3>Driver 1 — {DRIVER1}</h3>
 
         <label>Pickup Time:</label>
         <input
@@ -168,7 +164,7 @@ const App = () => {
           </>
         )}
 
-        <h4>Selected Employees (Driver 1) - ({count1})</h4>
+        <h4>Selected Employees (Driver 1) - {DRIVER1}</h4>
         {renderAssignedList(assignments1)}
 
         <button
@@ -183,7 +179,7 @@ const App = () => {
 
       {/* DRIVER 2 */}
       <div className="card">
-        <h3>Driver 2 — {DRIVER2} ({count2})</h3>
+        <h3>Driver 2 — {DRIVER2}</h3>
 
         <label>Pickup Time:</label>
         <input
@@ -225,7 +221,7 @@ const App = () => {
           </>
         )}
 
-        <h4>Selected Employees (Driver 2) -  ({count2})</h4>
+        <h4>Selected Employees (Driver 2) -  {DRIVER2}</h4>
         {renderAssignedList(assignments2)}
 
         <button
