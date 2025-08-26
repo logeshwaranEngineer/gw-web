@@ -67,7 +67,14 @@ const getFilteredEmployees = (driver) => {
     // ✅ Clear search after selection
     setSearchQuery(prev => ({ ...prev, [driver]: "" }));
   };
-
+function toBold(text) {
+  const map = {
+    A:"𝗔",B:"𝗕",C:"𝗖",D:"𝗗",E:"𝗘",F:"𝗙",G:"𝗚",H:"𝗛",I:"𝗜",J:"𝗝",
+    K:"𝗞",L:"𝗟",M:"𝗠",N:"𝗡",O:"𝗢",P:"𝗣",Q:"𝗤",R:"𝗥",S:"𝗦",T:"𝗧",
+    U:"𝗨",V:"𝗩",W:"𝗪",X:"𝗫",Y:"𝗬",Z:"𝗭"
+  };
+  return text.split("").map(ch => map[ch] || ch).join("");
+}
   // Add new employee
   const addEmployee = (name, permanent = false) => {
     if (!name.trim()) return;
@@ -111,7 +118,8 @@ const getFilteredEmployees = (driver) => {
 
       Object.keys(driverAssignments).forEach(loc => {
         if (driverAssignments[loc]?.length > 0) {
-          summary += `\n${loc}\n`;
+          // summary += `\n**${loc.toUpperCase()}**\n`; 
+          summary += `\n${toBold(loc.toUpperCase())}\n`;
           summary += driverAssignments[loc]
             .map((emp, i) => `${i + 1}. ${emp}`)
             .join("\n");
@@ -188,7 +196,10 @@ const getFilteredEmployees = (driver) => {
             </h4>
             {Object.keys(assignments[d.id]).map(loc => (
               <div key={loc}>
-                <strong>{loc}</strong> ({assignments[d.id][loc].length})
+         <div>
+  <strong>{loc}</strong> ({assignments[d.id][loc].length})
+</div>
+
                 <ul>
                   {assignments[d.id][loc].map(emp => (
                     <li key={emp}>
