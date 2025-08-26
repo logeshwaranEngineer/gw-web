@@ -100,6 +100,21 @@ button:hover {
   border-radius: 10px;
   font-size: 0.95rem;
 }
+.emp-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.emp-check input[type="checkbox"] {
+  accent-color: green; /* makes the tick ✔️ green */
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
 
 .emp-card span {
   flex: 1;
