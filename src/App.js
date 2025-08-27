@@ -1,6 +1,7 @@
   import React, { useState, useMemo } from "react";
   import { addDays, subDays, format } from "date-fns";
   import "./App.css";
+  import { EmployeeSelector } from "./search";
 
   const initialEmployees = [
     "BABU MD SOHAG",
@@ -123,7 +124,6 @@
 
   const SearchInput = ({ driverId, value, onChange }) => {
     const [localValue, setLocalValue] = useState(value || "");
-    
     const handleChange = (e) => {
       const newValue = e.target.value;
       setLocalValue(newValue);
@@ -170,7 +170,10 @@ const [activeDate, setActiveDate] = useState(tomorrow);
       driver1: "",
       driver2: "",
     });
-    const [searchQuery, setSearchQuery] = useState({ driver1: "", driver2: "" });
+    const [searchQuery, setSearchQuery] = useState(() => {
+      const saved = localStorage.getItem('searchQuery');
+      return saved ? JSON.parse(saved) : { driver1: "", driver2: "" };
+    });
     const [times, setTimes] = useState(loadSavedData(activeDate).times);
 
     // filter + sort employees
@@ -200,7 +203,11 @@ const [activeDate, setActiveDate] = useState(tomorrow);
   //   });
   // }, []);
   const handleSearchChange = React.useCallback((driverId, value) => {
-  setSearchQuery(prev => ({ ...prev, [driverId]: value }));
+  setSearchQuery(prev => {
+    const updated = { ...prev, [driverId]: value };
+    localStorage.setItem('searchQuery', JSON.stringify(updated));
+    return updated;
+  });
 }, []);
 
 const removeEmployee = (driver, emp, loc) => {
@@ -389,6 +396,32 @@ const removeEmployee = (driver, emp, loc) => {
         <h2 className="header">
           Transportation — {format(tomorrow, "dd/MM/yyyy EEEE")}
         </h2>
+        <button 
+          onClick={() => {
+            if (window.confirm("Are you sure you want to refresh/reset today's data? This will clear all assignments and reset times to default.")) {
+              // Reset assignments to empty
+              const resetAssignments = { driver1: {}, driver2: {} };
+              const resetTimes = { driver1: "06:30", driver2: "06:00" };
+              const resetSelectedLocation = { driver1: "", driver2: "" };
+              const resetSearchQuery = { driver1: "", driver2: "" };
+              
+              setAssignments(resetAssignments);
+              setTimes(resetTimes);
+              setSelectedLocation(resetSelectedLocation);
+              setSearchQuery(resetSearchQuery);
+              
+              // Clear from localStorage
+              const dateKey = format(activeDate, "yyyy-MM-dd");
+              localStorage.removeItem(`transport-${dateKey}`);
+              localStorage.removeItem('searchQuery');
+              
+              alert("Data refreshed successfully!");
+            }
+          }}
+          style={{ backgroundColor: "#ff6b6b", color: "white" }}
+        >
+          🔄 Refresh/Reset
+        </button>
         <button onClick={() => setPage("manage")}>⚙ Manage Employees</button>
         <button onClick={() => setPage("locations")}>📍 Manage Locations</button>
         <button onClick={() => setPage("yesterday")}>⬅ Yesterday’s Record</button>
@@ -436,61 +469,14 @@ const removeEmployee = (driver, emp, loc) => {
                 }
               }}
             />
-<div style={{ display: "flex", alignItems: "center", background: "#f1f1f1", borderRadius: "8px", padding: "6px 5px", margin: "4px 0" }}>
-  <span style={{ marginRight: "8px", color: "#888" }}>🔍</span>
-  <input
-    type="text"
-    placeholder="Search employee..."
-    value={searchQuery[d.id] || ""}
-    onChange={(e) => handleSearchChange(d.id, e.target.value)}
-    style={{
-      flex: 1,
-      border: "none",
-      outline: "none",
-      background: "transparent",
-      fontSize: "1rem"
-    }}
-  />
-</div>
-
-
-
-            <div className="scroll-box">
-              {getFilteredEmployees(d.id).map((emp) => (
-                <div
-                  key={emp}
-                  className="emp-item"
-                  onClick={() =>
-                    selectEmployee(d.id, emp, selectedLocation[d.id])
-                  }
-                >
-                  {emp}
-                </div>
-              ))}
-            </div>
-
-            <div className="card">
-              <h4>Selected Employees ({d.name})</h4>
-              {Object.keys(assignments[d.id]).map((loc) => (
-                <div key={loc}>
-                  <strong>{loc}</strong> ({assignments[d.id][loc].length})
-                 <ul>
-  {assignments[d.id][loc].map((emp) => (
-    <li key={emp} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-      <span>{emp}</span>
-      <button 
-        onClick={() => removeEmployee(d.id, emp, loc)} 
-        style={{ marginLeft: "8px", color: "red", border: "none", background: "transparent", cursor: "pointer" }}
-      >
-        ❌
-      </button>
-    </li>
-  ))}
-</ul>
-
-                </div>
-              ))}
-            </div>
+<EmployeeSelector 
+  d={d}
+  assignments={assignments}
+  selectedLocation={selectedLocation}
+  selectEmployee={selectEmployee}
+  removeEmployee={removeEmployee}
+  getFilteredEmployees={getFilteredEmployees}
+/>
 
             {/* Copy buttons per driver */}
             <button
