@@ -46,6 +46,8 @@
     "MRIDHA ROBIN",
     "HASAN ATIK",
     "SIDDIK MD ABU BAKKAR",
+"RANGANATHAN IYAPPAN",
+  "MIA MD SUJON",
   ];
 
   const initialLocations = [
